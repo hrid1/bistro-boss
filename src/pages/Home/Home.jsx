@@ -2,13 +2,17 @@ import React from "react";
 import Banner from "./Banner/Banner";
 import Category from "./Category/Category";
 import PopularMenu from "./PopularMenu/PopularMenu";
+import Featured from "./Featured/Featured";
+import Reviews from "./Reviews/Reviews";
 
 const Home = () => {
   return (
     <div>
       <Banner />
       <Category />
-      <PopularMenu/>
+      <PopularMenu />
+      <Featured />
+      <Reviews />
     </div>
   );
 };
