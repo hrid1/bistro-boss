@@ -18,7 +18,7 @@ const Cover = ({ img, title, subTilte }) => {
             <h1 className="text-5xl md:text-7xl text-white font-bold uppercase">
               {title}
             </h1>
-            <p className="text-lg text-white text-center uppercase">
+            <p className="text-lg text-white text-center uppercase w-5/6">
               {subTilte}
             </p>
           </div>
