@@ -8,6 +8,10 @@ export default {
       backgroundImage: {
         "featured-bg": "url('./src/assets/home/featured.jpg')",
       },
+      fontFamily: {
+        cinzil: ["Cinzel", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
+      },
     },
   },
   plugins: [daisyui],

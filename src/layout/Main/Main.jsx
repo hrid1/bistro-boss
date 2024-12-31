@@ -4,7 +4,7 @@ import Footer from "../../components/common/Footer";
 
 const Main = () => {
   return (
-    <div className="max-w-screen-xl mx-auto">
+    <div className="max-w-screen-2xl mx-auto font-inter">
       <Navbar />
       <div className="min-h-[calc(100vh-298px)]">
         <Outlet />

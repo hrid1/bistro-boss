@@ -12,12 +12,19 @@ const Navbar = () => {
           Home
         </NavLink>
       </li>
-      <NavLink to="/">About</NavLink>
+      <li>
+        <NavLink
+          className={({ isActive }) => (isActive ? "font-bold" : "")}
+          to="/menu"
+        >
+          Menu
+        </NavLink>
+      </li>
     </>
   );
 
   return (
-    <div className="fixed z-10 w-full right-0 left-0 top-0 ">
+    <div className="fixed z-20 w-full right-0 left-0 top-0 ">
       <div className="navbar max-w-7xl mx-auto text-white bg-opacity-20 bg-black">
         <div className="navbar-start">
           <div className="dropdown">
@@ -39,7 +46,7 @@ const Navbar = () => {
             </div>
             <ul
               tabIndex={0}
-              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+              className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-40 p-2 shadow text-gray-900"
             >
               {navlinks}
             </ul>
