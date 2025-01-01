@@ -9,6 +9,7 @@ import useMenu from "../../hooks/useMenu";
 import SectionTitle from "../../components/common/SectionTitle";
 import Menus from "../../components/common/Menus";
 import OrderButton from "../../components/OrderButton";
+import { Link } from "react-router-dom";
 
 const Menu = () => {
   const [menu] = useMenu();
@@ -51,14 +52,12 @@ const Menu = () => {
           }
         ></Cover>
         <SectionTitle
-          heading={"Desserts"}
+          heading={"desserts"}
           subheading={"Check it out"}
         ></SectionTitle>
-
-        <Menus category={deserts}></Menus>
-        <OrderButton text={"Order Your Favorite Food"} />
+        <Menus name={"dessert"} category={deserts}></Menus>
       </section>
-      {/* Desert section */}
+      {/* Pizza section */}
       <section className="px-4 my-14">
         <Cover
           img={pizzabg}
@@ -71,9 +70,7 @@ const Menu = () => {
           heading={"Pizza"}
           subheading={"Check it out"}
         ></SectionTitle>
-
-        <Menus category={pizzas}></Menus>
-        <OrderButton text="Order Your Favorite Food" />
+        <Menus name={"pizza"} category={pizzas}></Menus>
       </section>
       {/* Soup section */}
       <section className="px-4 my-14">
@@ -85,14 +82,12 @@ const Menu = () => {
           }
         ></Cover>
         <SectionTitle
-          heading={"Pizza"}
+          heading={"Soups"}
           subheading={"Check it out"}
         ></SectionTitle>
-
-        <Menus category={soups}></Menus>
-        <OrderButton text="Order Your Favorite Food" />
+        <Menus name={"soup"} category={soups}></Menus>
       </section>
-      {/* Soup section */}
+      {/* Salad section */}
       <section className="px-4 my-14">
         <Cover
           img={saladbg}
@@ -105,9 +100,7 @@ const Menu = () => {
           heading={"Salads"}
           subheading={"Check it out"}
         ></SectionTitle>
-
-        <Menus category={salads}></Menus>
-        <OrderButton text="Order Your Favorite Food" />
+        <Menus name={"salad"} category={salads}></Menus>
       </section>
     </div>
   );

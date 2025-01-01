@@ -20,6 +20,14 @@ const Navbar = () => {
           Menu
         </NavLink>
       </li>
+      <li>
+        <NavLink
+          className={({ isActive }) => (isActive ? "font-bold" : "")}
+          to="/order"
+        >
+          Order
+        </NavLink>
+      </li>
     </>
   );
 
