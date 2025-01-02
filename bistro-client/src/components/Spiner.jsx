@@ -7,7 +7,7 @@ const Spiner = () => {
         visible={true}
         height="96"
         width="96"
-        color="grey"
+        color="orange"
         strokeWidth="5"
         animationDuration="0.75"
         ariaLabel="rotating-lines-loading"
@@ -15,7 +15,7 @@ const Spiner = () => {
         wrapperClass=""
       />
     </div>
-  );
+);
 };
 
 export default Spiner;

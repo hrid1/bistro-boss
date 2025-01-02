@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
@@ -7,7 +7,7 @@ import useCart from "../../hooks/useCart";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
-  const [data,] = useCart();
+  const [data] = useCart();
   console.log(data);
 
   console.log(user);
@@ -79,14 +79,14 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1 flex gap-5">{navlinks}</ul>
         </div>
         <div className="navbar-end">
-          <div className="relative">
+          <Link to="/dashboard/cart" className="relative ">
             <span className="text-xl">
               <AiOutlineShoppingCart />
             </span>
             <p className="text-xs absolute -top-2.5 -right-2.5 bg-gray-800/60 text-white rounded-full px-1">
               {data?.length}
             </p>
-          </div>
+          </Link>
           <div>
             {user ? (
               <button onClick={handleLogout} className="btn btn-ghost">

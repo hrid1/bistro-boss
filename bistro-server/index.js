@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 const app = express();
@@ -50,7 +50,11 @@ async function run() {
       res.send(result);
     });
 
-    app.put;
+    app.delete("/cart/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await cartCollection.deleteOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
