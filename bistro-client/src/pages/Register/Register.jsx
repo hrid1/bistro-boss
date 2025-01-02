@@ -1,20 +1,61 @@
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
 import signupImg from "../../assets/others/authentication.gif";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { Helmet } from "react-helmet-async";
+import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
+import toast from "react-hot-toast";
 
 const Register = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
+  const { createUser, updateUserProfile } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const onSubmit = (data) => {
-    console.log(data);
+    // reset();
+    createUser(data.email, data.password)
+      .then((res) => {
+        if (res.user) {
+          // console.log(res.user);
+          updateUserProfile(data.username, data.photo)
+            .then(() => {
+              // console.log("Profile updated", res.user);
+              navigate("/");
+              toast.success("User created successfully", {
+                position: "top-right",
+              });
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+        }
+      })
+      .catch((err) => {
+        // console.log(err.message.split(":")[1]);
+        toast.error(err.message.split(":")[1], {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      });
   };
   return (
     <div>
+      <Helmet>
+        <title>Bistro Boss | Sign Up</title>
+      </Helmet>
+
       <div className="flex flex-col-reverse md:flex-row items-center justify-center min-h-screen ">
         {/* Login image */}
         <section className="w-full md:w-1/2 pl-12 md:ml-16">
@@ -33,18 +74,40 @@ const Register = () => {
             <div className="mb-2">
               <label
                 className="text-md font-medium  block mb-1"
+                htmlFor="photo"
+              >
+                Photo URL
+              </label>
+              <input
+                className="border rounded px-4 py-2 w-full focus:outline-none"
+                {...register("photo", { required: true })}
+                type="photo"
+                id="photo"
+                name="photo"
+                placeholder="Enter your photo"
+              />
+              {errors.photo && (
+                <span className="text-red-600">Photo Url is required</span>
+              )}
+            </div>
+            <div className="mb-2">
+              <label
+                className="text-md font-medium  block mb-1"
                 htmlFor="username"
               >
                 Username
               </label>
               <input
                 className="border rounded px-4 py-2 w-full focus:outline-none"
-                {...register("username")}
+                {...register("username", { required: true })}
                 type="username"
                 id="username"
                 name="username"
                 placeholder="Enter your username"
               />
+              {errors.username && (
+                <span className="text-red-600">Username is required</span>
+              )}
             </div>
             <div className="mb-2">
               <label
@@ -55,12 +118,15 @@ const Register = () => {
               </label>
               <input
                 className="border rounded px-4 py-2 w-full focus:outline-none"
-                {...register("email")}
+                {...register("email", { required: true })}
                 type="email"
                 id="emial"
                 name="email"
                 placeholder="Enter your email"
               />
+              {errors.email && (
+                <span className="text-red-600">Email is required</span>
+              )}
             </div>
             <div className="mb-2">
               <label
@@ -71,12 +137,32 @@ const Register = () => {
               </label>
               <input
                 className="border rounded px-4 py-2 w-full focus:outline-none"
-                {...register("password")}
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must have at least 6 characters",
+                  },
+                  maxLength: {
+                    value: 20,
+                    message: "Password must have at most 20 characters",
+                  },
+                  pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{6,20}$/,
+                    message:
+                      "Password must contain at least uppercase, lowercase & a number",
+                  },
+                })}
                 type="password"
                 id="password"
                 name="password"
                 placeholder="Enter your password"
               />
+              {errors.password && (
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <div className="mb-2 text-center ">
@@ -103,7 +189,7 @@ const Register = () => {
               className="btn w-full bg-[#D1A054B3] text-white hover:text-gray-700 my-4"
               type="submit"
             >
-              Sign In
+              Register
             </button>
           </form>
         </section>

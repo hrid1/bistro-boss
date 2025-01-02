@@ -8,12 +8,16 @@ import {
 } from "react-simple-captcha";
 import { AuthContext } from "../../providers/AuthProvider";
 import { FaFacebook, FaGithub, FaGoogle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 const Login = () => {
   const captchaRef = useRef(null);
   const [disable, setDisable] = useState(true);
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
+  const path = location?.state || "/";
   const handleValidate = () => {
     console.log(captchaRef.current?.value);
     const user_captcha = captchaRef.current?.value;
@@ -38,13 +42,17 @@ const Login = () => {
     console.log(email, password);
     loginUser(email, password).then((res) => {
       if (res.user) {
-        // toast
+        // console.log(res.user);
+        navigate(path);
       }
     });
   };
 
   return (
     <section>
+      <Helmet>
+        <title>Bistro Boss | Login</title>
+      </Helmet>
       <div className="flex flex-col md:flex-row items-center justify-center min-h-screen ">
         {/* Login image */}
         <section className="w-full md:w-1/2 pl-12 md:ml-16">
@@ -52,10 +60,10 @@ const Login = () => {
         </section>
 
         {/* login Form */}
-        <section className="w-full md:w-1/2 flex flex-col items-center justify-center md:mr-16">
+        <section className="w-full md:w-1/2 flex flex-col items-center justify-center  lg:mr-16">
           <form
             onSubmit={handleLogin}
-            className="border shadow-lg p-4 rounded-lg w-96 md:w-2/3 bg-gray-100"
+            className="border shadow-lg p-4 rounded-lg w-full md:w-5/6 lg:w-2/3 bg-gray-100"
           >
             <h1 className="text-2xl md:text-3xl text-center font-bold">
               Login
@@ -104,6 +112,7 @@ const Login = () => {
               />
               <button
                 onClick={handleValidate}
+                type="button"
                 className="w-full btn btn-sm bg-gray-400 text-white "
               >
                 Validate
