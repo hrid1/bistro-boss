@@ -142,7 +142,7 @@ const Login = () => {
             <button
               className="btn w-full bg-[#D1A054B3] text-white hover:text-gray-700 my-4"
               type="submit"
-              disabled={disable}
+              disabled={false}
             >
               Sign In
             </button>

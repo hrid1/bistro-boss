@@ -10,11 +10,10 @@ import { useState } from "react";
 const OrderPage = () => {
   const categories = ["salad", "pizza", "soup", "dessert", "drinks"];
   const { category } = useParams();
-  const initialIndex = categories?.indexOf(category);
-  // console.log(category);
+  const initialIndex = category ? categories.indexOf(category) : 0;
 
-  const [tabIndex, setTabIndex] = useState(initialIndex);
-  console.log(tabIndex)
+  const [tabIndex, setTabIndex] = useState(initialIndex || 0);
+  console.log(tabIndex);
 
   const [menu] = useMenu();
   const deserts = menu.filter((item) => item.category === "dessert");

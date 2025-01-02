@@ -23,9 +23,9 @@ export const router = createBrowserRouter([
       {
         path: "/order/",
         element: (
-          <PrivateRoute>
-            <OrderPage />
-          </PrivateRoute>
+          // <PrivateRoute>
+          <OrderPage />
+          // </PrivateRoute>
         ),
       },
       {

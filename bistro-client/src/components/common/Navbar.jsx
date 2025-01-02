@@ -1,10 +1,16 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../providers/AuthProvider";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { FaUser } from "react-icons/fa";
+import useCart from "../../hooks/useCart";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
+  const [data] = useCart();
+  console.log(data);
 
+  console.log(user);
   const handleLogout = () => {
     logoutUser().then((res) => {
       res;
@@ -73,15 +79,58 @@ const Navbar = () => {
           <ul className="menu menu-horizontal px-1 flex gap-5">{navlinks}</ul>
         </div>
         <div className="navbar-end">
-          {user ? (
-            <button onClick={handleLogout} className="btn btn-ghost">
-              Logout
-            </button>
-          ) : (
-            <NavLink to="/login" className="btn btn-ghost">
-              Login
-            </NavLink>
-          )}
+          <div className="relative">
+            <span className="text-xl">
+              <AiOutlineShoppingCart />
+            </span>
+            <p className="text-xs absolute -top-2.5 -right-2.5 bg-gray-800/60 text-white rounded-full px-1">
+              {data?.length}
+            </p>
+          </div>
+          <div>
+            {user ? (
+              <button onClick={handleLogout} className="btn btn-ghost">
+                Logout
+              </button>
+            ) : (
+              <NavLink to="/login" className="btn btn-ghost">
+                Login
+              </NavLink>
+            )}
+          </div>
+          <div className="dropdown dropdown-hover tabIndex={0} cursor-pointer">
+            {user ? (
+              <div className="w-8 h-8 rounded-full overflow-hidden b">
+                <img src={user?.photoURL} alt="" />
+              </div>
+            ) : (
+              <div className="mx-2">
+                <FaUser></FaUser>
+              </div>
+            )}
+            <ul
+              tabIndex={0}
+              className="dropdown-content  bg-base-100 w-16 z-[1] right-0 top-10 rounded-sm p-1 shadow"
+            >
+              <li className="text-black text-sm">
+                Hi, {user ? user.displayName : "Guest"}
+              </li>
+            </ul>
+          </div>
+
+          {/* <div className="dropdown dropdown-hover">
+            <div tabIndex={0} role="button" className="btn m-1">
+              Hover
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
+            >
+              <li>
+                <a>Item 1</a>
+              </li>
+            </ul>
+          </div> */}
         </div>
       </div>
     </div>
