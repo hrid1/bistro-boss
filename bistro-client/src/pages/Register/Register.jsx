@@ -6,6 +6,8 @@ import { Helmet } from "react-helmet-async";
 import { useContext } from "react";
 import { AuthContext } from "../../providers/AuthProvider";
 import toast from "react-hot-toast";
+import useAxiosPublic from "../../hooks/useAxiosPublic";
+import SocialLogin from "../../components/SocialLogin";
 
 const Register = () => {
   const {
@@ -17,19 +19,30 @@ const Register = () => {
 
   const { createUser, updateUserProfile } = useContext(AuthContext);
   const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
 
   const onSubmit = (data) => {
     // reset();
     createUser(data.email, data.password)
       .then((res) => {
-        if (res.user) {
-          // console.log(res.user);
+        const loggedUser = res.user;
+        if (loggedUser) {
+          // create user entry in db
           updateUserProfile(data.username, data.photo)
             .then(() => {
               // console.log("Profile updated", res.user);
-              navigate("/");
-              toast.success("User created successfully", {
-                position: "top-right",
+
+              const userInfo = {
+                name: data.name,
+                email: data.email,
+              };
+              axiosPublic.post("/users", userInfo).then((res) => {
+                if (res.data.insertedId) {
+                  toast.success("User created successfully", {
+                    position: "top-right",
+                  });
+                  navigate("/");
+                }
               });
             })
             .catch((err) => {
@@ -66,7 +79,7 @@ const Register = () => {
         <section className="w-full md:w-1/2 flex flex-col items-center justify-center md:mr-16">
           <form
             onSubmit={handleSubmit(onSubmit)}
-            className="border shadow-lg p-4 rounded-lg w-96 md:w-11/12 lg:w-2/3 bg-gray-100"
+            className="border shadow-lg p-4 rounded-lg w-96 md:w-11/12 lg:w-2/3 bg-base-100 "
           >
             <h1 className="text-2xl md:text-3xl text-center font-bold">
               Sign Up
@@ -165,32 +178,22 @@ const Register = () => {
               )}
             </div>
 
+            <button
+              className="btn w-full bg-[#D1A054B3] text-base-400 hover:text-gray-700 my-4"
+              type="submit"
+            >
+              Register
+            </button>
             <div className="mb-2 text-center ">
+              <p className="font-medium">Or sign in with</p>
+              <SocialLogin />
               <p className="text-orange-500 text-sm">
                 Already have an account?{" "}
                 <Link to="/login" className="text-orange-500 font-medium">
                   Login
                 </Link>
               </p>
-              <p className="font-medium">Or sign in with</p>
-              <div className="space-x-8 mt-2.5">
-                <button>
-                  <FaFacebook className="text-xl" />
-                </button>
-                <button>
-                  <FaGoogle className="text-xl" />
-                </button>
-                <button>
-                  <FaGithub className="text-xl" />
-                </button>
-              </div>
             </div>
-            <button
-              className="btn w-full bg-[#D1A054B3] text-white hover:text-gray-700 my-4"
-              type="submit"
-            >
-              Register
-            </button>
           </form>
         </section>
       </div>

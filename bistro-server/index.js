@@ -22,9 +22,22 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const userCollection = client.db("BistroBossDB").collection("users");
     const menuCollection = client.db("BistroBossDB").collection("menu");
     const reviewCollection = client.db("BistroBossDB").collection("reviews");
     const cartCollection = client.db("BistroBossDB").collection("cart");
+
+    // User APIs
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      // insert email if user doesn't exits: 3 ways:1.email unique, 2. upsert 3. simple checking
+      const isExited = await userCollection.findOne({ email: user.email });
+      if (isExited) {
+        return res.send({ message: "user already exists", insertedId: null });
+      }
+      const result = await userCollection.insertOne(user);
+      res.send(result);
+    });
 
     // APIs
     app.get("/menu", async (req, res) => {
