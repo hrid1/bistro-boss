@@ -28,6 +28,12 @@ async function run() {
     const cartCollection = client.db("BistroBossDB").collection("cart");
 
     // User APIs
+
+    app.get("/users", async(req, res) => {
+      const result = await userCollection.find({}).toArray();
+      res.send(result);
+    })
+
     app.post("/users", async (req, res) => {
       const user = req.body;
       // insert email if user doesn't exits: 3 ways:1.email unique, 2. upsert 3. simple checking
