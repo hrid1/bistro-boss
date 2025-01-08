@@ -16,7 +16,7 @@ const Login = () => {
   const [disable, setDisable] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
+  // console.log(location);
   const path = location?.state || "/";
   const handleValidate = () => {
     console.log(captchaRef.current?.value);
@@ -33,7 +33,7 @@ const Login = () => {
   }, []);
 
   const { loginUser } = useContext(AuthContext);
-  console.log(loginUser);
+  // console.log(loginUser);
 
   const handleLogin = (e) => {
     e.preventDefault();

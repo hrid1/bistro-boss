@@ -29,11 +29,39 @@ async function run() {
     const reviewCollection = client.db("BistroBossDB").collection("reviews");
     const cartCollection = client.db("BistroBossDB").collection("cart");
 
- 
+    // console.log(process.env.ACCESS_TOKEN_SECRET)
+    // JWT related api
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "1h",
+      });
+      res.send({ token });
+    });
+
+    // middleware
+    const verifyToken = (req, res, next) => {
+      console.log("inside", req.headers.authorization);
+      if (!req.headers.authorization) {
+        return res.status(401).send({ message: "Forbidden Access" });
+      }
+
+      const token = req.headers.authorization.split(" ")[1];
+      console.log(token);
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
+        if (err) {
+          return res.status(403).json({ message: "Invalid Token" });
+        }
+        req.user = decoded;
+        next();
+      });
+    };
+
     // User APIs
 
-    app.get("/users", async (req, res) => {
+    app.get("/users", verifyToken, async (req, res) => {
       const result = await userCollection.find({}).toArray();
+      // console.log(req.headers)
       res.send(result);
     });
 

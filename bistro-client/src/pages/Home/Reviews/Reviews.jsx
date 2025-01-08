@@ -21,7 +21,7 @@ const Reviews = () => {
       .then((data) => setReviews(data));
   }, []);
 
-  console.log(reviews.length);
+  // console.log(reviews.length);
   return (
     <div className="py-32">
       <SectionTitle
