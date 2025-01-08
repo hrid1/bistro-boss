@@ -16,6 +16,7 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const googleProvider = new GoogleAuthProvider();
+  
 
   const createUser = (email, password) => {
     setLoading(true);
@@ -46,6 +47,11 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => { 
       setUser(user);
       setLoading(false);
+      if(currentUser){
+        // get Token and store client
+      }else{
+        //  TODO: remove token (if token stored in client side local storage, caching, in memory)
+      }
     });
     return () => unsubscribe();
   }, []);

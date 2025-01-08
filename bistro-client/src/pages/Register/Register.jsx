@@ -33,7 +33,7 @@ const Register = () => {
               // console.log("Profile updated", res.user);
 
               const userInfo = {
-                name: data.name,
+                name: data.username,
                 email: data.email,
               };
               axiosPublic.post("/users", userInfo).then((res) => {
