@@ -14,12 +14,15 @@ import {
 } from "react-icons/fa";
 import { HiUserGroup } from "react-icons/hi";
 import { MdOutlineRestaurantMenu } from "react-icons/md";
+import useAdmin from "../../hooks/useAdmin";
 
 const Dashboard = () => {
   const [data] = useCart();
 
   // TODO: get admin from the db;
-  const isAdmin = true;
+  // const isAdmin = true;
+  const [isAdmin] = useAdmin();
+
   return (
     <div className="flex ">
       {/* side bar */}
@@ -69,7 +72,7 @@ const Dashboard = () => {
                   to="/dashboard/all-users"
                 >
                   <HiUserGroup />
-                  All User 
+                  All User
                 </NavLink>
               </ul>
             </>
