@@ -120,7 +120,7 @@ async function run() {
       }
     );
 
-    app.delete("/users/:id", varifyToken, verifyAdmin, async (req, res) => {
+    app.delete("/users/:id", verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await userCollection.deleteOne(query);
