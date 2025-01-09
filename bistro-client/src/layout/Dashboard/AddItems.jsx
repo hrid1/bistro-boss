@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import SectionTitle from "../../components/common/SectionTitle";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
+import Swal from "sweetalert2";
 
 const image_hosting_key = import.meta.env.VITE_IMG_HOSTING_KEY;
 
@@ -10,6 +11,7 @@ const AddItems = () => {
   // handle img hosting
 
   const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   const { register, handleSubmit } = useForm();
   const onSubmit = async (data) => {
@@ -25,15 +27,27 @@ const AddItems = () => {
       }
     );
 
-    // console.log({ ...data, image: data.data.url });
-    const menuItem = {
-      name: data.name,
-      category: data.category,
-      price: parseFloat(data.price),
-      recipe: data.recipe,
-      image: response.data.data.url,
-    };
-    console.log(menuItem);
+    //    create item and send to the server
+    if (response.data.success) {
+      const menuItem = {
+        name: data.name,
+        category: data.category,
+        price: parseFloat(data.price),
+        recipe: data.recipe,
+        image: response.data.data.url,
+      };
+      //   console.log(menuItem);
+      const menuRes = await axiosSecure.post("/menu", menuItem);
+      console.log(menuRes.data);
+      if (menuRes.data.insertedId) {
+        Swal.fire({
+          title: "Success!",
+          text: "Menu item added successfully",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      }
+    }
   };
 
   return (
