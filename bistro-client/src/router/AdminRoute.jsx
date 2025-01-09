@@ -4,14 +4,14 @@ import useAuth from "../hooks/useAuth";
 import Spiner from "../components/Spiner";
 
 const AdminRoute = ({ children }) => {
-  const [user, loading] = useAuth();
+  const {user, loading} = useAuth();
   const [isAdmin, isAdminLoading] = useAdmin();
   const location = useLocation();
 
   if (loading || isAdminLoading) return <Spiner />;
 
   if (user && isAdmin) {
-    return children;
+    return <div>{children}</div>;
   }
 
   return <Navigate state={location?.pathname} to="/login" />;
