@@ -5,6 +5,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import Spiner from "../../components/Spiner";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 
 const Cart = () => {
   const [data, refetch, , isLoading] = useCart();
@@ -51,9 +52,20 @@ const Cart = () => {
         </div>
       ) : (
         <div className="w-11/12 mx-auto h bg-white p-4 md:p-8 rounded-md">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between px-4 items-center">
             <h3 className="text-3xl">Total Items: {data?.length}</h3>
             <h3 className="text-3xl"> Price: {totalPrice}</h3>
+            {data.length ? (
+              <Link to="/dashboard/payment">
+                <button className="btn btn-sm bg-orange-500 text-white">
+                  Buy
+                </button>
+              </Link>
+            ) : (
+              <button disabled className="btn btn-sm bg-orange-500 text-white">
+                Buy
+              </button>
+            )}
           </div>
           {/* table */}
           <div className="overflow-x-auto my-6 border rounded">
