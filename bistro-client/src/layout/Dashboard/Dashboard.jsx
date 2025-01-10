@@ -24,9 +24,9 @@ const Dashboard = () => {
   const [isAdmin] = useAdmin();
 
   return (
-    <div className="flex ">
+    <div className="flex flex-row min-h-screen">
       {/* side bar */}
-      <section className="w-68 bg-orange-300/80 text-black h-screen px-8 py-12 font-cinzil">
+      <section className="w-68 text-black bg-orange-300/80  px-8 py-12 font-cinzil">
         <div className="mb-14">
           <h2 className="text-3xl font-bold">Bistro Boss</h2>
           <p>RESTURANT</p>

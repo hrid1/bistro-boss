@@ -103,36 +103,92 @@ async function run() {
       res.send(result);
     });
 
-    app.patch("/users/admin/:id", verifyAdmin, async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const updatedDoc = {
-        $set: {
-          role: "admin",
-        },
-      };
-      const result = await userCollection.updateOne(filter, updatedDoc);
-      res.send(result);
-    });
+    app.patch(
+      "/users/admin/:id",
+      verifyToken,
+      verifyAdmin,
+      async (req, res) => {
+        const id = req.params.id;
+        const filter = { _id: new ObjectId(id) };
+        const updatedDoc = {
+          $set: {
+            role: "admin",
+          },
+        };
+        const result = await userCollection.updateOne(filter, updatedDoc);
+        res.send(result);
+      }
+    );
 
-    app.delete("/users/:id", verifyAdmin, async (req, res) => {
+    app.delete("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await userCollection.deleteOne(query);
       res.send(result);
     });
 
-    // -------MENU APIs
+    // --------------------MENU APIs
     app.get("/menu", async (req, res) => {
       const result = await menuCollection.find({}).toArray();
       res.send(result);
     });
+    // get single menu
+    app.get("/menu/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await menuCollection.findOne(query);
+      if (!result) {
+        return res.status(404).send({ error: "Menu not found" });
+      }
+      res.send(result);
+    });
 
+    // app.get("/menu/:id", async (req, res) => {
+    //   const id = req.params.id;
+
+    //   console.log("Received ID:", id); // Log the ID
+    //   console.log("Is ObjectId valid:", ObjectId.isValid(id)); // Check validity
+
+    //   if (!ObjectId.isValid(id)) {
+    //     return res.status(400).send({ error: "Invalid ID format" });
+    //   }
+
+    //   const query = { _id: new ObjectId(id) };
+    //   console.log("Query being used:", query); // Log query object
+
+    //   try {
+    //     const result = await menuCollection.findOne(query);
+    //     if (!result) {
+    //       console.log("Result not found for ID:", id); // Log if not found
+    //       return res.status(404).send({ error: "Menu not found" });
+    //     }
+
+    //     res.send(result);
+    //   } catch (error) {
+    //     console.error("Error during query:", error); // Log any errors
+    //     res.status(500).send({ error: "Internal Server Error" });
+    //   }
+    // });
+
+    // create new menu item
     app.post("/menu", async (req, res) => {
       const item = req.body;
       const result = await menuCollection.insertOne(item);
       res.send(result);
     });
+
+    app.patch("/menu/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const option = { upsert: true };
+      const updateMenu = {
+        $set: req.body,
+      };
+      const result = await menuCollection.updateOne(filter, updateMenu, option);
+      res.send(result);
+    });
+
+  
 
     app.delete("/menu/:id", async (req, res) => {
       const id = req.params.id;

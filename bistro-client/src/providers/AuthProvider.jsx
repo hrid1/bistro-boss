@@ -60,6 +60,7 @@ const AuthProvider = ({ children }) => {
           });
         } else {
           //  TODO: remove token (if token stored in client side local storage, caching, in memory)
+          localStorage.removeItem("access-token");
         }
     });
     return () => unsubscribe();
