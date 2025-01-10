@@ -1,14 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PaymentElement,
   useStripe,
   useElements,
   CardElement,
 } from "@stripe/react-stripe-js";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useCart from "../../../hooks/useCart";
+import useAuth from "../../../hooks/useAuth";
 
 export default function CheckoutForm() {
+  const [error, setError] = useState("");
+  const [clientSecret, setClientSecret] = useState("");
+  const [transactionId, setTransactionId] = useState("");
   const stripe = useStripe();
   const elements = useElements();
+  const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
+  const [data] = useCart();
+  const totalPrice = data?.reduce((total, item) => total + item.price, 0) || 0;
+  console.log(totalPrice);
+
+  useEffect(() => {
+    axiosSecure
+      .post("/create-payment-intent", { price: totalPrice })
+      .then((res) => {
+        // console.log(res.data.clientSecret);
+        setClientSecret(res.data.clientSecret);
+      });
+  }, [axiosSecure, totalPrice]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,8 +47,30 @@ export default function CheckoutForm() {
     });
     if (error) {
       console.log("Payment Error", error);
+      setError(error);
     } else {
       console.log("Payment Method", paymentMethod);
+      setError("");
+    }
+    // CONFIRM PAYMENT
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: card,
+          billing_details: {
+            email: user?.email || "anonymous",
+            name: user?.displayName || "anonymous",
+          },
+        },
+      });
+
+    if (confirmError) {
+      console.log("confirm error");
+    } else {
+      console.log("payment intent", paymentIntent);
+      if (paymentIntent.status === "succeeded") {
+        console.log("transaction id", paymentIntent);
+      }
     }
   };
 
@@ -50,9 +92,15 @@ export default function CheckoutForm() {
           },
         }}
       />
-      <button className="btn btn-sm my-4 " type="submit" disabled={!stripe}>
+      <button
+        className="btn btn-sm my-4 "
+        type="submit"
+        disabled={!stripe || !clientSecret}
+      >
         Pay
       </button>
+      {error && <p className="text-red-500">{error}</p>}
+      {transactionId && <p className="text-green-400">{transactionId}</p>}
     </form>
   );
 }
