@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 import {
   PaymentElement,
   useStripe,
@@ -17,17 +18,19 @@ export default function CheckoutForm() {
   const elements = useElements();
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
-  const [data] = useCart();
-  const totalPrice = data?.reduce((total, item) => total + item.price, 0) || 0;
+  const [data, refetch] = useCart();
+  const totalPrice = data?.reduce((total, item) => total + item.price, 0);
   console.log(totalPrice);
 
   useEffect(() => {
-    axiosSecure
-      .post("/create-payment-intent", { price: totalPrice })
-      .then((res) => {
-        // console.log(res.data.clientSecret);
-        setClientSecret(res.data.clientSecret);
-      });
+    if (totalPrice > 0) {
+      axiosSecure
+        .post("/create-payment-intent", { price: totalPrice })
+        .then((res) => {
+          // console.log(res.data.clientSecret);
+          setClientSecret(res.data.clientSecret);
+        });
+    }
   }, [axiosSecure, totalPrice]);
 
   const handleSubmit = async (e) => {
@@ -70,6 +73,29 @@ export default function CheckoutForm() {
       console.log("payment intent", paymentIntent);
       if (paymentIntent.status === "succeeded") {
         console.log("transaction id", paymentIntent);
+        setTransactionId(paymentIntent.id);
+
+        // save the payment in server
+        const payment = {
+          email: user.email,
+          price: totalPrice,
+          transactionId: paymentIntent.id,
+          date: new Date(),
+          cartsId: data.map((item) => item._id),
+          menuItemsId: data.map((item) => item.menuId),
+          status: "pending",
+        };
+
+        const res = await axiosSecure.post("/payments", payment);
+        console.log("Payment Saved:", res.data);
+        refetch();
+        if (res.data.paymentResult?.insertedId) {
+          Swal.fire({
+            icon: "success",
+            title: "Payment Successful",
+            text: `Transaction ID: ${paymentIntent.id}`,
+          });
+        }
       }
     }
   };
@@ -100,7 +126,9 @@ export default function CheckoutForm() {
         Pay
       </button>
       {error && <p className="text-red-500">{error}</p>}
-      {transactionId && <p className="text-green-400">{transactionId}</p>}
+      {transactionId && (
+        <p className="text-green-400 text-xs font-semibold">{transactionId}</p>
+      )}
     </form>
   );
 }
