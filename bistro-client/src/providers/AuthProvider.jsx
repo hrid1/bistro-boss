@@ -46,22 +46,23 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
       setLoading(false);
       if (currentUser) {
-          // get Token and store client
-          const userInfo = { email: currentUser.email };
-      
-          axiosPublic.post("/jwt", userInfo).then((res) => {
-            if (res.data.token) {
-              localStorage.setItem("access-token", res.data.token);
-              // console.log(res.data.token);
-            }
-          });
-        } else {
-          //  TODO: remove token (if token stored in client side local storage, caching, in memory)
-          localStorage.removeItem("access-token");
-        }
+        // get Token and store client
+        const userInfo = { email: currentUser.email };
+
+        axiosPublic.post("/jwt", userInfo).then((res) => {
+          if (res.data.token) {
+            localStorage.setItem("access-token", res.data.token);
+            // console.log(res.data.token);
+            setUser(currentUser);
+          }
+        });
+      } else {
+        //  TODO: remove token (if token stored in client side local storage, caching, in memory)
+        localStorage.removeItem("access-token");
+        setUser(currentUser);
+      }
     });
     return () => unsubscribe();
   }, [axiosPublic]);

@@ -39,7 +39,7 @@ const Dashboard = () => {
               <ul className="font-semibold text-xl uppercase">
                 <NavLink
                   className="py-4 w-full  flex items-center gap-2.5"
-                  to="/dashboard"
+                  to="/dashboard/adminHome"
                 >
                   <FaHome />
                   Admin Home
@@ -82,7 +82,7 @@ const Dashboard = () => {
               <ul className="font-semibold text-xl uppercase">
                 <NavLink
                   className="py-4 w-full  flex items-center gap-2.5"
-                  to="/dashboard"
+                  to="/dashboard/userHome"
                 >
                   <FaHome />
                   User Home

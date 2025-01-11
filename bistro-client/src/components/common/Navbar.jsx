@@ -4,11 +4,13 @@ import { AuthContext } from "../../providers/AuthProvider";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaUser } from "react-icons/fa";
 import useCart from "../../hooks/useCart";
+import useAdmin from "../../hooks/useAdmin";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
+  const [isAdmin] = useAdmin();
   const [data] = useCart();
-  // console.log(data);
+  
 
   // console.log(user);
   const handleLogout = () => {
@@ -41,6 +43,14 @@ const Navbar = () => {
         >
           Order
         </NavLink>
+      </li>
+      <li>
+        {user && isAdmin && (
+          <NavLink to="dashboard/adminHome">Dashboard A</NavLink>
+        )}
+        {user && !isAdmin && (
+          <NavLink to="dashboard/userHome">Dashboard U</NavLink>
+        )}
       </li>
     </>
   );
