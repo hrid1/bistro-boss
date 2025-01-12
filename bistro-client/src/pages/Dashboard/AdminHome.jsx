@@ -13,11 +13,21 @@ const AdminHome = () => {
       return res.data;
     },
   });
+  const { data: cartData } = useQuery({
+    queryKey: ["order-stats"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/order-stats");
+      return res.data;
+    },
+  });
   console.log(data);
   const { menuItems, orders, revenue, users } = data || {};
   return (
     <div>
-      <h2 className="text-4xl text-center mt-4 font-semibold"> Hi, Admin {user?.displayName}</h2>
+      <h2 className="text-4xl text-center mt-4 font-semibold">
+        {" "}
+        Hi, Admin {user?.displayName}
+      </h2>
 
       <section>
         <div className="px-4 py-12 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-xl md:px-24 lg:px-8 lg:py-16">
@@ -32,10 +42,10 @@ const AdminHome = () => {
             </div>
             <div className="text-center md:border-x">
               <h6 className="text-4xl font-bold lg:text-5xl xl:text-6xl">
-              {users}
+                {users}
               </h6>
               <p className="text-sm font-medium tracking-widest text-gray-800 uppercase lg:text-base">
-               Customars
+                Customars
               </p>
             </div>
             <div className="text-center md:border-x">
@@ -57,6 +67,9 @@ const AdminHome = () => {
           </div>
         </div>
       </section>
+
+      {/* recharts */}
+      <section></section>
     </div>
   );
 };

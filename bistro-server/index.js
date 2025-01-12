@@ -263,7 +263,7 @@ async function run() {
     });
 
     // states or anlytics
-    app.get("/admin-stats", verifyToken, verifyAdmin,async (req, res) => {
+    app.get("/admin-stats", verifyToken, verifyAdmin, async (req, res) => {
       const users = await userCollection.estimatedDocumentCount();
       const menuItems = await menuCollection.estimatedDocumentCount();
       const orders = await paymentCollection.estimatedDocumentCount();
@@ -272,8 +272,7 @@ async function run() {
       // const payments = await paymentCollection.find().toArray();
       // const revenue = payments.reduce((total, payment) => {
       //   return total + payment.price;
-      // }, 0);
-
+      // }
       const payments = await paymentCollection
         .aggregate([
           {
@@ -286,14 +285,51 @@ async function run() {
         .toArray();
 
       const revenue = payments[0]?.totalRevenue || 0;
-      console.log(payments)
+      console.log(payments);
 
       res.send({
         users,
         menuItems,
         orders,
-        revenue
+        revenue,
       });
+    });
+
+    app.get("/order-stats", async (req, res) => {
+      const result = await paymentCollection
+        .aggregate([
+          {
+            $unwind: "$menuItemsId",
+          },
+          {
+            $lookup: {
+              from: "menu",
+              localField: "menuItemsId",
+              foreignField: "_id",
+              as: "menuItems",
+            },
+          },
+          {
+            $unwind: "$menuItems",
+          },
+          {
+            $group: {
+              _id: "$menuItems.category",
+              quantity: { $sum: 1 },
+              totalRevenue: { $sum: "$menuItems.price" },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              category: "$_id",
+              quantity: "$quantity",
+              revenue: "$totalRevenue",
+            },
+          },
+        ])
+        .toArray();
+      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
